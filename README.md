@@ -31,6 +31,5 @@ All of these are CSS transitions, so a reversal mid-animation reverses from wher
 
 ## Open items
 
-- Cards 2–6 body copy and link labels are **placeholders**. The design only specifies card 1's content.
 - Oracle Sans isn't bundled, so the page falls back to system-ui until the font files are added.
 - The exported SVGs carry the components' default paint, so they're used unedited as masks filled with the token colour.
