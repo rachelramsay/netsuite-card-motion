@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Card grid — hover options</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="effects.css">
+  <link rel="stylesheet" href="options.css">
+  <script src="cards.js" defer></script>
+  <script src="effects.js" defer></script>
+</head>
+<body>
+  <header class="picker">
+    <fieldset data-effect-picker>
+      <legend>Hover option</legend>
+      <label class="chip" data-note="Baseline. The current expand and reveal with nothing added. Dial: Polish."><input type="radio" name="effect" value="none"><span>01 · Expand only</span></label>
+      <label class="chip" data-note="The card rises 4px as it opens. The most common gallery pattern; quiet and safe. Dial: Polish."><input type="radio" name="effect" value="lift"><span>02 · Lift</span></label>
+      <label class="chip" data-note="A soft light follows the cursor across the surface (Linear / Vercel style). Fades in over 300ms. Dial: Polish."><input type="radio" name="effect" value="spotlight"><span>03 · Spotlight</span></label>
+      <label class="chip" data-note="Only the 1px border lights up in brand blue, brightest near the cursor (21st.dev shine-border family). Dial: Polish."><input type="radio" name="effect" value="border-glow"><span>04 · Border glow</span></label>
+      <label class="chip" data-note="A 1px brand line draws around the edge in 450ms (Hover.css outline family). Dial: Polish → Expressive."><input type="radio" name="effect" value="trace"><span>05 · Border trace</span></label>
+      <label class="chip" data-note="A 3px brand-blue edge grows down the left side. It points at the active card without moving it. Dial: Restraint → Polish."><input type="radio" name="effect" value="accent-bar"><span>06 · Accent bar</span></label>
+      <label class="chip" data-note="The icon turns brand blue and lifts 2px. The smallest change on the list. Dial: Restraint."><input type="radio" name="effect" value="icon-accent"><span>07 · Icon accent</span></label>
+      <label class="chip" data-note="One diagonal light band sweeps across as the card opens, once and never looping. Dial: Polish → Expressive."><input type="radio" name="effect" value="sheen"><span>08 · Sheen</span></label>
+      <label class="chip" data-note="Up to 4° of 3D tilt toward the cursor (vanilla-tilt style). A vestibular trigger, so it's off under reduced motion. Dial: Expressive."><input type="radio" name="effect" value="tilt"><span>09 · Tilt</span></label>
+    </fieldset>
+    <p class="picker__note" data-effect-note aria-live="polite"></p>
+  </header>
+  <main class="page">
+    <!-- Figma 1:437 "Grid". One card is active at a time; card 1 matches the design's active state. -->
+    <section class="card-grid" aria-label="When to move to NetSuite" data-card-grid data-effect="none">
+
+      <article class="card" data-card data-active>
+        <span class="card__icon" aria-hidden="true" style="--icon: url(assets/icon-globe.svg)"></span>
+        <h3 class="card__title">
+          <button class="card__trigger" type="button" aria-expanded="true" aria-controls="card-1-details">When you expand into new markets</button>
+        </h3>
+        <div class="card__details" id="card-1-details">
+          <div class="card__clip">
+            <div class="card__content">
+              <p class="card__body">Run multiple subsidiaries, currencies and tax rules on one ledger, and close them together.</p>
+              <a class="text-link" href="#">Global business management<span class="text-link__icon" aria-hidden="true"></span></a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Cards 2–6: body copy and link labels are PLACEHOLDERS. The design only specifies card 1's active content. -->
+      <article class="card" data-card>
+        <span class="card__icon" aria-hidden="true" style="--icon: url(assets/icon-gear.svg)"></span>
+        <h3 class="card__title">
+          <button class="card__trigger" type="button" aria-expanded="false" aria-controls="card-2-details">When generic software won’t cut it</button>
+        </h3>
+        <div class="card__details" id="card-2-details" inert>
+          <div class="card__clip">
+            <div class="card__content">
+              <p class="card__body">Tailor records, workflows and scripts to the way you work, without forking the product.</p>
+              <a class="text-link" href="#">Platform customization<span class="text-link__icon" aria-hidden="true"></span></a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" data-card>
+        <span class="card__icon" aria-hidden="true" style="--icon: url(assets/icon-house.svg)"></span>
+        <h3 class="card__title">
+          <button class="card__trigger" type="button" aria-expanded="false" aria-controls="card-3-details">When you outgrow QuickBooks</button>
+        </h3>
+        <div class="card__details" id="card-3-details" inert>
+          <div class="card__clip">
+            <div class="card__content">
+              <p class="card__body">Move accounting, inventory and reporting onto one system that keeps up as you grow.</p>
+              <a class="text-link" href="#">Moving from QuickBooks<span class="text-link__icon" aria-hidden="true"></span></a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" data-card>
+        <span class="card__icon" aria-hidden="true" style="--icon: url(assets/icon-acquire.svg)"></span>
+        <h3 class="card__title">
+          <button class="card__trigger" type="button" aria-expanded="false" aria-controls="card-4-details">When you acquire another company</button>
+        </h3>
+        <div class="card__details" id="card-4-details" inert>
+          <div class="card__clip">
+            <div class="card__content">
+              <p class="card__body">Bring a new entity onto your books in weeks, with consolidation handled from day one.</p>
+              <a class="text-link" href="#">Mergers and acquisitions<span class="text-link__icon" aria-hidden="true"></span></a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" data-card>
+        <span class="card__icon" aria-hidden="true" style="--icon: url(assets/icon-sparkle.svg)"></span>
+        <h3 class="card__title">
+          <button class="card__trigger" type="button" aria-expanded="false" aria-controls="card-5-details">When AI changes how you work</button>
+        </h3>
+        <div class="card__details" id="card-5-details" inert>
+          <div class="card__clip">
+            <div class="card__content">
+              <p class="card__body">Put AI to work inside the transactions and reports your teams already use every day.</p>
+              <a class="text-link" href="#">AI in NetSuite<span class="text-link__icon" aria-hidden="true"></span></a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" data-card>
+        <span class="card__icon" aria-hidden="true" style="--icon: url(assets/icon-shield.svg)"></span>
+        <h3 class="card__title">
+          <button class="card__trigger" type="button" aria-expanded="false" aria-controls="card-6-details">When compliance gets more complex</button>
+        </h3>
+        <div class="card__details" id="card-6-details" inert>
+          <div class="card__clip">
+            <div class="card__content">
+              <p class="card__body">Keep audit trails, revenue rules and controls in one place as regulations change.</p>
+              <a class="text-link" href="#">Governance and compliance<span class="text-link__icon" aria-hidden="true"></span></a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </section>
+  </main>
+</body>
+</html>

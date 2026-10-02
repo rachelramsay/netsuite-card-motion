@@ -1,0 +1,50 @@
+/* Picker chrome for options.html. Not part of the component. */
+.picker {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 16px var(--space-24) 12px;
+  background: rgb(19 33 44 / 0.92);
+  border-bottom: 1px solid rgb(181 213 224 / 0.12);
+  backdrop-filter: blur(8px);
+}
+.picker fieldset {
+  margin: 0 auto;
+  max-width: 1168px;
+  padding: 0;
+  border: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.picker legend {
+  float: left;
+  margin-right: 8px;
+  padding: 7px 0;
+  font-size: 13px;
+  color: rgb(251 249 248 / 0.6);
+}
+.chip { cursor: pointer; }
+.chip input { position: absolute; opacity: 0; pointer-events: none; }
+.chip span {
+  display: block;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgb(181 213 224 / 0.25);
+  font-size: 13px;
+  color: var(--color-text-neutral-body);
+  transition: background-color var(--motion-duration-fast) ease, border-color var(--motion-duration-fast) ease;
+}
+.chip input:checked + span {
+  background: var(--color-background-card-flat-hover);
+  border-color: var(--color-brand-primary);
+}
+.chip input:focus-visible + span { outline: 2px solid var(--color-focus-ring); outline-offset: 2px; }
+.picker__note {
+  margin: 10px auto 0;
+  max-width: 1168px;
+  min-height: 20px;
+  font-size: 14px;
+  line-height: 20px;
+  color: rgb(251 249 248 / 0.75);
+}

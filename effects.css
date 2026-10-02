@@ -1,0 +1,107 @@
+/* ------------------------------------------------------------------
+   Hover-effect options, layered on top of the base expand/reveal.
+   Each one keys off .card[data-active], so keyboard focus and taps get
+   the same effect as a hover. Pick one in options.html.
+   ------------------------------------------------------------------ */
+
+@property --spot-a { syntax: "<number>"; inherits: false; initial-value: 0; }
+@property --glow-a { syntax: "<number>"; inherits: false; initial-value: 0; }
+
+:root {
+  --color-brand-primary: #1eb6ec;   /* NetSuite brand primary */
+  --motion-sheen-duration: 700ms;
+}
+
+.card { --mx: 50%; --my: 50%; --rx: 0deg; --ry: 0deg; }
+
+/* 1 · Lift: the card rises 4px with the md shadow */
+[data-effect="lift"] .card {
+  transition-property: background-color, transform;
+}
+[data-effect="lift"] .card[data-active] { transform: translateY(-4px); }
+
+/* 2 · Spotlight: a soft light follows the cursor across the surface */
+[data-effect="spotlight"] .card {
+  background-image: radial-gradient(320px circle at var(--mx) var(--my),
+    rgb(181 213 224 / calc(var(--spot-a) * 0.12)), transparent 70%);
+  transition-property: background-color, --spot-a;
+}
+[data-effect="spotlight"] .card[data-active] { --spot-a: 1; }
+
+/* 3 · Border glow: only the border lights up, brightest near the cursor */
+[data-effect="border-glow"] .card__trigger::before {
+  padding: 1px;
+  background: radial-gradient(220px circle at var(--mx) var(--my),
+    rgb(30 182 236 / calc(var(--glow-a) * 0.9)), rgb(181 213 224 / calc(var(--glow-a) * 0.12)) 60%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  transition: --glow-a var(--motion-card-collapse-duration) var(--motion-card-easing-move);
+}
+[data-effect="border-glow"] .card[data-active] .card__trigger::before {
+  --glow-a: 1;
+  transition-duration: var(--motion-card-expand-duration);
+}
+
+/* 4 · Border trace: a 1px line draws around the card from the top-left (Hover.css "outline" family) */
+[data-effect="trace"] .card__trigger::before {
+  --c: var(--color-brand-primary);
+  background:
+    linear-gradient(var(--c) 0 0) top left / 0 1px no-repeat,
+    linear-gradient(var(--c) 0 0) top right / 1px 0 no-repeat,
+    linear-gradient(var(--c) 0 0) bottom right / 0 1px no-repeat,
+    linear-gradient(var(--c) 0 0) bottom left / 1px 0 no-repeat;
+  transition: background-size var(--motion-card-collapse-duration) var(--motion-card-easing-move);
+}
+[data-effect="trace"] .card[data-active] .card__trigger::before {
+  background-size: 100% 1px, 1px 100%, 100% 1px, 1px 100%;
+  transition-duration: 450ms;
+}
+
+/* 5 · Accent bar: a brand-blue edge grows down the left side */
+[data-effect="accent-bar"] .card__trigger::before {
+  background: linear-gradient(var(--color-brand-primary) 0 0) top left / 3px 0 no-repeat;
+  transition: background-size var(--motion-card-collapse-duration) var(--motion-card-easing-move);
+}
+[data-effect="accent-bar"] .card[data-active] .card__trigger::before {
+  background-size: 3px 100%;
+  transition-duration: var(--motion-card-expand-duration);
+  transition-timing-function: var(--motion-card-easing-enter);
+}
+
+/* 6 · Icon accent: the icon takes the brand colour and lifts 2px */
+[data-effect="icon-accent"] .card__icon {
+  transition-property: width, height, background-color, translate;
+}
+[data-effect="icon-accent"] .card[data-active] .card__icon {
+  background-color: var(--color-brand-primary);
+  translate: 0 -2px;
+}
+
+/* 7 · Sheen: one diagonal light band sweeps across as the card opens. It plays once and never loops. */
+[data-effect="sheen"] .card__trigger::before {
+  background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 0.07) 50%, transparent 65%)
+    -150% 0 / 250% 100% no-repeat;
+}
+[data-effect="sheen"] .card[data-active] .card__trigger::before {
+  animation: sheen var(--motion-sheen-duration) var(--motion-easing-standard) var(--motion-card-reveal-delay) both;
+}
+@keyframes sheen { to { background-position: 250% 0; } }
+
+/* 8 · Tilt: up to 4° of 3D tilt toward the cursor (Expressive dial; JS turns it off under reduced motion) */
+[data-effect="tilt"] .card-grid,
+.card-grid[data-effect="tilt"] { perspective: 1000px; }
+[data-effect="tilt"] .card {
+  transform: rotateX(var(--rx)) rotateY(var(--ry));
+  transition-property: background-color, transform;
+}
+[data-effect="tilt"] .card[data-active] { transition-duration: 120ms, 120ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-effect="lift"] .card[data-active],
+  [data-effect="tilt"] .card { transform: none; }
+  [data-effect="icon-accent"] .card[data-active] .card__icon { translate: none; }
+  [data-effect="trace"] .card__trigger::before,
+  [data-effect="accent-bar"] .card__trigger::before { transition: none; }
+  [data-effect="sheen"] .card[data-active] .card__trigger::before { animation: none; }
+}

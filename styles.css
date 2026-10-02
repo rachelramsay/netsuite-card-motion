@@ -1,0 +1,272 @@
+/* ------------------------------------------------------------------
+   Tokens. Values and names come from the Figma variables on node 1:5.
+   ------------------------------------------------------------------ */
+:root {
+  --color-ocean-170: #1a2f3f;
+  --color-page-end: #2c2b3c;
+  --color-background-card-flat-default: #13212c;
+  --color-background-card-flat-hover: #1f3a4b;
+  --color-text-neutral-body: #fbf9f8;
+  --color-text-link-primary: #b5d5e0;
+  --color-focus-ring: #b5d5e0;
+  --color-elevation-06: rgba(0, 0, 0, 0.28);
+  --color-elevation-08: rgba(0, 0, 0, 0.36);
+  --color-elevation-10: rgba(0, 0, 0, 0.44);
+
+  --shadow-sm: 0 1px 3px 0 var(--color-elevation-10), 0 1px 2px 0 var(--color-elevation-06);
+  --shadow-md: 0 4px 8px 0 var(--color-elevation-08), 0 2px 4px 0 var(--color-elevation-06);
+
+  --space-16: 16px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --radius-md: 8px;
+
+  --type-family-sans: "Oracle Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --type-h4-font-size: 28px;
+  --type-h4-line-height: 36px;
+  --type-size-14: 14px;
+  --type-line-height-20: 20px;
+
+  /* Motion primitives. The curve names match ~/Button_InteractionTest. */
+  --motion-duration-fast: 150ms;
+  --motion-duration-base: 200ms;
+  --motion-duration-moderate: 300ms;
+  --motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);     /* on-screen movement */
+  --motion-easing-decelerate: cubic-bezier(0.2, 0.8, 0.2, 1); /* entering / responding */
+
+  /* Motion semantics. Components read these, never the primitives. */
+  --motion-card-expand-duration: var(--motion-duration-moderate);
+  --motion-card-collapse-duration: var(--motion-duration-base);   /* exit ≈ 2/3 of entrance */
+  --motion-card-reveal-delay: 75ms;                                /* body follows the layout */
+  --motion-card-easing-move: var(--motion-easing-standard);
+  --motion-card-easing-enter: var(--motion-easing-decelerate);
+  --motion-link-nudge-duration: var(--motion-duration-fast);
+  --motion-link-nudge-distance: 3px;
+}
+
+/* ------------------------------------------------------------------
+   Page
+   ------------------------------------------------------------------ */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(180deg, var(--color-ocean-170) 11.517%, var(--color-page-end) 78.087%) fixed;
+  color: var(--color-text-neutral-body);
+  font-family: var(--type-family-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 96px var(--space-24);
+}
+
+/* Figma 1:437. Three columns of 368px with 32px gaps, stacking on narrow screens. */
+.card-grid {
+  width: min(100%, 1168px);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: 272px;
+  gap: var(--space-32);
+}
+@media (max-width: 1000px) { .card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px)  { .card-grid { grid-template-columns: minmax(0, 1fr); gap: var(--space-16); } }
+
+/* ------------------------------------------------------------------
+   Card. Cards are a fixed 272px, so expanding never reflows the grid.
+   ------------------------------------------------------------------ */
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--space-24);
+  border-radius: var(--radius-md);
+  background-color: var(--color-background-card-flat-default);
+  box-shadow: var(--shadow-sm);
+  overflow: clip;
+  transition: background-color var(--motion-card-collapse-duration) var(--motion-card-easing-move);
+}
+
+/* The md shadow sits on a pseudo-element that only fades its opacity, so box-shadow is never animated. */
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: var(--shadow-md);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--motion-card-collapse-duration) var(--motion-card-easing-move);
+}
+
+.card__icon {
+  position: relative;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  margin-bottom: var(--space-16);
+  /* The icon box is 44px, so animating its size is cheap. It shrinks from its top-left corner like the design. */
+  transition:
+    width var(--motion-card-collapse-duration) var(--motion-card-easing-move),
+    height var(--motion-card-collapse-duration) var(--motion-card-easing-move);
+}
+/* The exported SVGs carry the component's default paint (#161513, #325C72), but the Figma
+   instances override it. So the SVG is used unedited as a mask, and the token colour fills it. */
+.card__icon,
+.text-link__icon {
+  display: block;
+  background-color: currentColor;
+  -webkit-mask: var(--icon) center / 100% 100% no-repeat;
+          mask: var(--icon) center / 100% 100% no-repeat;
+}
+.card__icon { color: var(--color-text-neutral-body); }
+
+.card__title {
+  margin: 0;
+  font-size: var(--type-h4-font-size);
+  line-height: var(--type-h4-line-height);
+  font-weight: 300;
+}
+
+/* The title button stretches across the whole card, so the card itself is the hit target. */
+.card__trigger {
+  all: unset;
+  cursor: pointer;
+  overflow-wrap: break-word;
+}
+.card__trigger::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  z-index: 0;
+}
+.card__trigger:focus-visible::before {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: -4px;
+}
+
+/* Details open by animating the track from 0fr to 1fr. It is the only layout-affecting
+   transition, and it is limited to the inside of a fixed-height card. */
+.card__details {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--motion-card-collapse-duration) var(--motion-card-easing-move);
+}
+.card__clip {
+  min-height: 0;
+  overflow: hidden;
+}
+.card__content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-16);
+  padding-top: var(--space-16);
+  opacity: 0;
+  transform: translateY(4px);
+  /* Leaving: fade first and fast, with no delay. */
+  transition:
+    opacity calc(var(--motion-card-collapse-duration) * 0.6) var(--motion-card-easing-move),
+    transform calc(var(--motion-card-collapse-duration) * 0.6) var(--motion-card-easing-move);
+}
+
+.card__body {
+  margin: 0;
+  font-size: var(--type-size-14);
+  line-height: var(--type-line-height-20);
+  letter-spacing: 0.07px;
+  font-weight: 300;
+  text-box: trim-both cap alphabetic;
+}
+
+/* ---- Active state (Figma: "Component 9") ---- */
+.card[data-active] {
+  background-color: var(--color-background-card-flat-hover);
+  transition-duration: var(--motion-card-expand-duration);
+  transition-timing-function: var(--motion-card-easing-enter);
+}
+.card[data-active]::after {
+  opacity: 1;
+  transition-duration: var(--motion-card-expand-duration);
+  transition-timing-function: var(--motion-card-easing-enter);
+}
+.card[data-active] .card__icon {
+  width: 32px;
+  height: 32px;
+  transition-duration: var(--motion-card-expand-duration);
+}
+.card[data-active] .card__details {
+  grid-template-rows: 1fr;
+  transition-duration: var(--motion-card-expand-duration);
+}
+.card[data-active] .card__content {
+  opacity: 1;
+  transform: none;
+  transition-duration: calc(var(--motion-card-expand-duration) - var(--motion-card-reveal-delay));
+  transition-delay: var(--motion-card-reveal-delay);
+  transition-timing-function: var(--motion-card-easing-enter);
+}
+
+/* ------------------------------------------------------------------
+   Text Link (Figma 1:177). Keeps its persistent underline. The arrow nudges on hover.
+   ------------------------------------------------------------------ */
+.text-link {
+  position: relative;
+  z-index: 1;                  /* sits above the stretched card trigger */
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding-block: 12px;
+  border-radius: 4px;
+  color: var(--color-text-link-primary);
+  font-size: 16px;
+  line-height: 16px;
+  letter-spacing: -0.2px;
+  text-decoration: underline;
+  text-decoration-skip-ink: none;
+  text-underline-position: from-font;
+}
+.text-link:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+.text-link__icon {
+  --icon: url(assets/icon-arrow-right.svg);
+  width: 16px;
+  height: 16px;
+  flex: none;
+  transition: transform var(--motion-link-nudge-duration) var(--motion-easing-decelerate);
+}
+@media (hover: hover) and (pointer: fine) {
+  .text-link:hover .text-link__icon { transform: translateX(var(--motion-link-nudge-distance)); }
+}
+.text-link:focus-visible .text-link__icon { transform: translateX(var(--motion-link-nudge-distance)); }
+
+/* ------------------------------------------------------------------
+   Reduced motion: replace movement instead of removing it. Layout changes
+   (details height, icon size) snap into place, but the surface, shadow and
+   body still crossfade, so the state change stays visible.
+   ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .card__details,
+  .card[data-active] .card__details,
+  .card__icon,
+  .card[data-active] .card__icon { transition: none; }
+
+  .card__content,
+  .card[data-active] .card__content {
+    transform: none;
+    transition: opacity var(--motion-duration-fast) linear;
+    transition-delay: 0s;
+  }
+  .text-link__icon,
+  .text-link:hover .text-link__icon,
+  .text-link:focus-visible .text-link__icon { transform: none; transition: none; }
+}
