@@ -2,11 +2,45 @@
 
 The "When to move" card grid from Figma (`PDIwDi42eHKRFIH8tWHD7C`, node `1:5`), animated with plain CSS and a small script. No build step.
 
+`options.html` is a picker for nine hover effects (lift, spotlight, border glow, trace, accent bar, icon accent, sheen and tilt), layered on the same cards. They live in `effects.css` and `effects.js`.
+
+## Share with a password
+
+The site uses a Cloudflare Worker to protect the options page and its assets with a shared password. Do not deploy this as a plain GitHub Pages site: static hosting does not run the Worker and cannot enforce the login gate.
+
+1. Install Node.js and Wrangler, then authenticate with Cloudflare:
+
+	```sh
+	npx wrangler login
+	```
+
+2. From this repository, set the two secrets. Choose the shared password privately, and generate a separate signing secret:
+
+	```sh
+	npx wrangler secret put ACCESS_PASSWORD
+	openssl rand -base64 32
+	npx wrangler secret put SESSION_SECRET
+	```
+
+	Enter the generated value when Wrangler prompts for `SESSION_SECRET`. Never add either value to the repository.
+
+3. Deploy and share the `*.workers.dev` URL Wrangler prints:
+
+	```sh
+	npx wrangler deploy
+	```
+
+Successful sign-in creates an HTTP-only, secure session cookie that expires after eight hours. `/logout` clears the session. If either secret is missing, the Worker fails closed rather than serving the page.
+
+## Local preview
+
+For an ungated local preview, serve the files over HTTP:
+
 ```sh
-python3 -m http.server 8140   # then open http://localhost:8140
+python3 -m http.server 8140
 ```
 
-`options.html` is a picker for nine hover effects (lift, spotlight, border glow, trace, accent bar, icon accent, sheen and tilt), layered on the same cards. They live in `effects.css` and `effects.js`.
+Then open `http://localhost:8140`. The icons are CSS masks, and Chrome blocks masks over `file://`.
 
 The page must be served over http. The icons are CSS masks, and Chrome blocks masks over `file://`.
 
